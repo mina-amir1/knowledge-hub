@@ -1,0 +1,39 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install sshpass and Composer
+        run: |
+          sudo apt-get install -y sshpass
+          curl -sS https://getcomposer.org/installer | php
+          sudo mv composer.phar /usr/local/bin/composer
+          sudo chmod +x /usr/local/bin/composer
+
+      - name: Deploy to server
+        env:
+          SSH_PASS: ${{ secrets.SSH_PASS }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST bash -c '
+            cd ~/public_html/knowledge-hub &&
+            git pull origin prod &&
+            composer install --no-dev --optimize-autoloader &&
+            php artisan migrate --force &&
+            php artisan cache:clear &&
+            composer dump-autoload &&
+            php artisan view:clear &&
+            php artisan route:clear &&
+            php artisan config:clear 
+          '
