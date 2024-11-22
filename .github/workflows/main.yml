@@ -20,6 +20,12 @@ jobs:
           curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
           sudo chmod +x /usr/local/bin/composer
 
+      - name: Debug Environment
+        run: |
+          echo "Current PATH: $PATH"
+          php -v
+          composer -V || echo "Composer not found"
+
       - name: Deploy to server
         env:
           SSH_PASS: ${{ secrets.SSH_PASS }}
