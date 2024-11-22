@@ -15,10 +15,7 @@ jobs:
 
       - name: Install sshpass and Composer
         run: |
-          # Install sshpass for SSH connections
           sudo apt-get install -y sshpass
-          
-          # Install Composer globally
           curl -sS https://getcomposer.org/installer | php
           sudo mv composer.phar /usr/local/bin/composer
           sudo chmod +x /usr/local/bin/composer
@@ -29,32 +26,14 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
-          # Using sshpass to log in and deploy on remote server
           sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST bash -c '
-            # Ensure we're in the correct directory
             cd ~/public_html/knowledge-hub &&
-            
-            # Pull latest changes from the main branch
             git pull origin main &&
-            
-            # Install dependencies using composer
             composer install --no-dev --optimize-autoloader &&
-            
-            # Run the Laravel migrations
             php artisan migrate --force &&
-            
-            # Clear various Laravel caches
             php artisan cache:clear &&
-            
-            # Dump Composer autoload
             composer dump-autoload &&
-            
-            # Clear the view cache
             php artisan view:clear &&
-            
-            # Clear the route cache
             php artisan route:clear &&
-            
-            # Clear the config cache
             php artisan config:clear
           '
