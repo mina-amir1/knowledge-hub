@@ -15,9 +15,9 @@ jobs:
 
       - name: Install sshpass and Composer
         run: |
+          sudo apt-get update
           sudo apt-get install -y sshpass
-          curl -sS https://getcomposer.org/installer | php
-          sudo mv composer.phar /usr/local/bin/composer
+          curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
           sudo chmod +x /usr/local/bin/composer
 
       - name: Deploy to server
