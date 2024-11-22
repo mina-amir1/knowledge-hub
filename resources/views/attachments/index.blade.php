@@ -58,7 +58,7 @@
                                     @foreach($files as $file)
                                     <tr class="align-middle">
                                         <td>{{ $file->id }}</td>
-                                        <td><a href="{{ Storage::url('attachments/').$file->file_name }}"
+                                        <td><a href="{{ Storage::disk('public')->url('attachments/').$file->file_name }}"
                                                target="_blank"
                                                class="text-decoration-none"
                                                download="{{ $file->original_name }}">

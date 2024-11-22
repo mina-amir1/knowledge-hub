@@ -26,7 +26,7 @@
                         <a href="{{ route('user', User::find($message->from_id) ? User::find($message->from_id)->id : '' ) }}" class="dropdown-item"> <!--begin::Message-->
                             <div class="d-flex">
                                 <div class="flex-shrink-0"><img
-                                        src="{{ User::find($message->from_id) ? Storage::url('img/'.User::find($message->from_id)->avatar) : asset('img/avatar5.png') }}"
+                                        src="{{ User::find($message->from_id) ? Storage::disk('public')->url('img/'.User::find($message->from_id)->avatar) : asset('img/avatar5.png') }}"
                                         alt="User Avatar"
                                         class="img-size-50 rounded-circle me-3"></div>
                                 <div class="flex-grow-1">
@@ -77,7 +77,7 @@
             <!--begin::User Menu Dropdown-->
             <li class="nav-item dropdown user-menu"><a href="#" class="nav-link dropdown-toggle"
                                                        data-bs-toggle="dropdown"> <img
-                        src="{{ Auth::user()->avatar ? Storage::url('img/'. Auth::user()->avatar) : asset('img/avatar5.png') }}"
+                        src="{{ Auth::user()->avatar ? Storage::disk('public')->url('img/'. Auth::user()->avatar) : asset('img/avatar5.png') }}"
                         class="user-image rounded-circle shadow"
                         alt="User Image"> <span class="d-none d-md-inline">{{ Auth::user()->name }}</span> </a>
                 <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end"> <!--begin::User Image-->

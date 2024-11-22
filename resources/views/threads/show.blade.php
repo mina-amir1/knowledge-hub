@@ -90,7 +90,7 @@
                                                     @foreach($comment->attachments as $file)
                                                         @if($file->status === Attachment::APPROVED)
                                                             <li>
-                                                                <a href="{{ Storage::url('attachments/').$file->file_name }}"
+                                                                <a href="{{ Storage::disk('public')->url('attachments/').$file->file_name }}"
                                                                    target="_blank"
                                                                    download="{{ $file->original_name }}">
                                                                     {{ $file->original_name }}
