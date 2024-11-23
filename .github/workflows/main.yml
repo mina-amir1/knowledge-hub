@@ -33,6 +33,8 @@ jobs:
           SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
           sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST bash -c '
+            source ~/.bashrc || true &&
+            source ~/.profile || true &&
             cd ~/public_html/knowledge-hub &&
             git pull origin main &&
             /usr/local/bin/composer install --no-dev --optimize-autoloader &&
