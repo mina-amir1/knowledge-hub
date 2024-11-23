@@ -38,7 +38,7 @@ jobs:
             /opt/cpanel/composer/bin/composer install --no-dev --optimize-autoloader &&
             php artisan migrate --force &&
             php artisan cache:clear &&
-            composer dump-autoload &&
+            /opt/cpanel/composer/bin/composer dump-autoload &&
             php artisan view:clear &&
             php artisan route:clear &&
             php artisan config:clear
