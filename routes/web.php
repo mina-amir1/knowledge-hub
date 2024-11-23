@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('login', [AuthController::class,'showLoginForm']);
 Route::post('login',[AuthController::class,'login'])->name('login');
-Route::get('logout',[AuthController::class,'logout'])->name('logout');
+Route::post('logout',[AuthController::class,'logout'])->name('logout');
 Route::get('activate/{token}',[AuthController::class,'activationShow'])->name('activate.show');
 Route::post('activate/{token}',[AuthController::class,'activateUser'])->name('activate');
 

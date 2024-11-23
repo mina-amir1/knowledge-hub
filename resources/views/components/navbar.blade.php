@@ -82,7 +82,7 @@
                         alt="User Image"> <span class="d-none d-md-inline">{{ Auth::user()->name }}</span> </a>
                 <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end"> <!--begin::User Image-->
                     <li class="user-header text-bg-primary"><img
-                            src="{{ Auth::user()->avatar ? Storage::url('img/'. Auth::user()->avatar) : asset('img/avatar5.png') }}"
+                            src="{{ Auth::user()->avatar ? Storage::disk('public')->url('img/'. Auth::user()->avatar) : asset('img/avatar5.png') }}"
                             class="rounded-circle shadow" alt="User Image">
                         <p>
                             {{ Auth::user()->name}}
@@ -98,7 +98,11 @@
                     {{--                    </li> <!--end::Menu Body--> <!--begin::Menu Footer-->--}}
                     <li class="user-footer">
                         <a href="{{ route('profile.show') }}" class="btn btn-default btn-flat">Profile</a>
-                        <a href="{{ route('logout') }}" class="btn btn-default btn-flat float-end">Sign out</a></li>
+                        <form action="{{ route('logout') }}" method="post" style="display: inline;">
+                            @csrf
+                            <button type="submit" class="btn btn-default btn-flat float-end">Sign out</button>
+                        </form>
+{{--                        <a href="{{ route('logout') }}" class="btn btn-default btn-flat float-end">Sign out</a></li>--}}
                     <!--end::Menu Footer-->
                 </ul>
             </li> <!--end::User Menu Dropdown-->

@@ -63,8 +63,10 @@ class AuthController extends Controller
         }
         return view('error')->with('error','Activation Failed, We cannot find your account!');
     }
-    public function logout() {
+    public function logout(Request $request) {
         Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect('/');
     }
 }
