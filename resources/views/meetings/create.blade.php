@@ -51,12 +51,12 @@
                                                                                                      class="form-control"
                                                                                                      id="exampleInputPassword1">
                                     </div>
-                                    <div class="mb-3"><label for="exampleInputPassword1"
-                                                             class="form-label">URL</label> <input type="text"
-                                                                                                   name="url"
-                                                                                                   required
-                                                                                                   class="form-control"
-                                                                                                   id="exampleInputPassword1">
+                                    <div class="mb-3">
+                                        <label for="exampleInputPassword1" class="form-label">URL</label>
+                                        <div class="d-flex align-items-center">
+                                            <input type="text" name="url"  required class="form-control me-2 w-75" id="url-input">
+                                            <a id="make-url" class="btn btn-primary">Generate link</a>
+                                        </div>
                                     </div>
                                     <div class="mb-3"><label for="exampleInputEmail1" class="form-label">Start Time
                                             (UTC)</label> <input type="datetime-local"
@@ -96,7 +96,28 @@
     </main>
     <script>
         $(document).ready(function () {
+            function generateRandomString() {
+                const characters = "abcdefghijklmnopqrstuvwxyz"; // Characters to use
+                const segmentLength = 3; // Length of each segment
+                const numSegments = 3; // Number of segments
+                let result = [];
+
+                for (let i = 0; i < numSegments; i++) {
+                    let segment = '';
+                    for (let j = 0; j < segmentLength; j++) {
+                        segment += characters.charAt(Math.floor(Math.random() * characters.length));
+                    }
+                    result.push(segment);
+                }
+
+                return result.join('-'); // Join segments with dashes
+            }
+
             $('.select2').select2();
+            $("#make-url").click(function (event) {
+                const randomString = generateRandomString();
+                $("#url-input").val('https://meet.jit.si/' + randomString);
+            });
         });
     </script>
 @endsection

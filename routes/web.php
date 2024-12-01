@@ -58,7 +58,7 @@ Route::middleware(['auth','active'])->group(function () {
 
     Route::post('/notifications/mark-as-seen', [UserController::class, 'markAsSeen'])->name('notifications.markAsSeen');
 
-
+    Route::get('contacts',[UserController::class, 'contacts'])->name('contacts');
     Route::get('/', function () {
         return view('dashboard');
     })->name('dashboard');

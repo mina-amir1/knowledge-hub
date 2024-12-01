@@ -37,6 +37,14 @@
                         <p>Meetings</p>
                     </a>
                 </li>
+                <li class="nav-item"> <a href="{{ route('contacts') }}" class="nav-link"> <i class="nav-icon bi bi-telephone-fill"></i>
+                        <p>Users Contacts</p>
+                    </a>
+                </li>
+                <li class="nav-item"> <a href="{{ route(config('chatify.routes.prefix')) }}" class="nav-link"> <i class="nav-icon bi bi-chat-fill"></i>
+                        <p>Messages</p>
+                    </a>
+                </li>
 {{--                <li class="nav-item"> <a href="#" class="nav-link"> <i class="nav-icon bi bi-box-seam-fill"></i>--}}
 {{--                        <p>--}}
 {{--                            Widgets--}}

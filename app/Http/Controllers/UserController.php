@@ -103,6 +103,13 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048', // Set size limit as needed
             'name' => 'required|string|max:255',
+            'organisation_name' => 'required|string|max:255',
+            'organisation_about' => 'nullable|string|max:255',
+            'no_employees' => 'nullable|integer',
+            'social_media' => 'nullable|string|max:255',
+            'phone' => 'required|string|max:255',
+            'expertises' => 'required|array',
+            'locations' => 'required|array',
         ]);
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -122,7 +129,17 @@ class UserController extends Controller
             $request->file('avatar')->storeAs('img', $filename, 'public');
             $user->avatar = $filename;
         }
+
         $user->name = $request->get('name');
+        $user->organisation_name = $request->get('organisation_name');
+        $user->organisation_about = $request->get('organisation_about');
+        $user->no_employees = $request->get('no_employees');
+        $user->social_media = $request->get('social_media');
+        $user->phone = $request->get('phone');
+
+        $user->expertises()->sync($request->get('expertises',[]));
+        $user->locations()->sync($request->get('locations',[]));
+
         $user->save();
 
         return redirect()->back()->with('success', 'Profile updated successfully.');
@@ -132,6 +149,12 @@ class UserController extends Controller
     {
         \auth()->user()->unreadNotifications()->update(['read_at' => now()]);
         return "success";
+    }
+
+    public function contacts()
+    {
+        $contacts = User::active()->role('user')->paginate(env('PER_PAGE'));
+        return view('users.contacts', compact('contacts'));
     }
 
 }

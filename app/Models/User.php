@@ -23,7 +23,12 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'activation_token',
-        'is_blocked'
+        'is_blocked',
+        'phone',
+        'organisation_name',
+        'organisation_about',
+        'no_employees',
+        'social_media',
     ];
 
     /**
@@ -62,5 +67,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public function scopeActive($query)
     {
         return $query->where('is_blocked', false)->whereNotNull('email_verified_at');
+    }
+
+    public function locations()
+    {
+        return $this->belongsToMany(Location::class);
+    }
+
+    public function expertises()
+    {
+        return $this->belongsToMany(Expertise::class);
     }
 }
