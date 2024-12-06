@@ -54,51 +54,6 @@
                                                                 value="{{ Auth::user()->phone ?? '' }}"
                                                                 id="exampleInputPassword1"></div>
 
-                                    <div class="mb-3"><label for="exampleInputPassword1" class="form-label">Organisation
-                                            Name</label> <input type="text" name="organisation_name" required class="form-control"
-                                                                value="{{ Auth::user()->organisation_name ?? '' }}"
-                                                                id="exampleInputPassword1"></div>
-
-                                    <div class="mb-3"><label for="exampleInputEmail1"
-                                                             class="form-label">Expertise</label>
-                                        <select class="form-control select2" id="expertise-select" name="expertises[]"
-                                                multiple="multiple" required>
-                                            @php $expertises = \auth()->user()->expertises->pluck('id')->toArray(); @endphp
-                                            @foreach(\App\Models\Expertise::all() as $expertise)
-                                                <option value="{{ $expertise->id }}" {{ in_array($expertise->id,$expertises)? 'selected' : '' }}>
-                                                    {{ $expertise->field }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-3"><label for="exampleInputEmail1"
-                                                             class="form-label">Locations</label>
-                                        <select class="form-control select2" id="location-select" name="locations[]"
-                                                multiple="multiple" required>
-                                        @php $locations = \auth()->user()->locations->pluck('id')->toArray(); @endphp
-                                        @foreach(\App\Models\Location::all() as $location)
-                                                <option value="{{ $location->id }}" {{ in_array($location->id,$locations)? 'selected' : '' }}>
-                                                    {{ $location->province }}
-                                                   </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="mb-3"><label for="exampleInputPassword1" class="form-label">Organisation
-                                            About</label> <input type="text" name="organisation_about" class="form-control"
-                                                                value="{{ Auth::user()->organisation_about ?? '' }}"
-                                                                id="exampleInputPassword1" max="255"></div>
-
-                                    <div class="mb-3"><label for="exampleInputPassword1" class="form-label">No of
-                                            Employees</label> <input type="number" min="0" name="no_employees" class="form-control"
-                                                                 value="{{ Auth::user()->no_employees ?? '' }}"
-                                                                 id="exampleInputPassword1" max="255"></div>
-
-                                    <div class="mb-3"><label for="exampleInputPassword1" class="form-label">Social
-                                            Media</label> <input type="text" name="social_media" class="form-control"
-                                                                 value="{{ Auth::user()->social_media ?? '' }}"
-                                                                 id="exampleInputPassword1" max="255"></div>
-
                                     <label for="inputGroupFile02">Logo/Image</label>
                                     <div class="input-group mb-3"> <input type="file" name="avatar" class="form-control" id="inputGroupFile02"> <label class="input-group-text" for="inputGroupFile02">Upload</label> </div>
 {{--                                 <div class="mb-3 form-check"> <input type="checkbox" class="form-check-input" id="exampleCheck1"> <label class="form-check-label" for="exampleCheck1">Check me out</label> </div>--}}

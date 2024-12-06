@@ -14,7 +14,7 @@ class MeetingsController extends Controller
 {
     public function index()
     {
-        if (Auth::user()->role == 'admin') {
+        if (Auth::user()->hasRole('admin')) {
             $meetings = Meeting::paginate(env('PER_PAGE'));
             return view('meetings.index', compact('meetings'));
         }

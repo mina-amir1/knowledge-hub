@@ -1,3 +1,4 @@
+@php use App\Models\Organization; @endphp
 @extends('layout')
 
 @section('main')
@@ -43,18 +44,53 @@
                             <form action="{{ route('users.store') }}" method="POST"> <!--begin::Body-->
                                 @csrf
                                 <div class="card-body">
-                                    <div class="mb-3"> <label for="exampleInputPassword1" class="form-label">Full Name</label> <input type="text" name="name" required class="form-control" id="exampleInputPassword1"> </div>
-                                    <div class="mb-3"> <label for="exampleInputEmail1" class="form-label">Email address</label> <input type="email" name="email" required class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                    <div class="mb-3"><label for="exampleInputPassword1" class="form-label">Full
+                                            Name</label> <input type="text" name="name" required class="form-control"
+                                                                id="exampleInputPassword1"></div>
+                                    <div class="mb-3"><label for="exampleInputEmail1" class="form-label">Email
+                                            address</label> <input type="email" name="email" required
+                                                                   class="form-control" id="exampleInputEmail1"
+                                                                   aria-describedby="emailHelp">
                                         <div id="emailHelp" class="form-text">
                                             We'll invite user with this email.
                                         </div>
                                     </div>
-{{--                                    <div class="mb-3"> <label for="exampleInputPassword1" class="form-label">Password</label> <input type="password" class="form-control" id="exampleInputPassword1"> </div>--}}
-{{--                                    <label for="exampleInputPassword1" class="form-label">Image</label>--}}
-{{--                                    <div class="input-group mb-3"> <input type="file" class="form-control" id="inputGroupFile02"> <label class="input-group-text" for="inputGroupFile02">Upload</label> </div>--}}
-{{--                                    <div class="mb-3 form-check"> <input type="checkbox" class="form-check-input" id="exampleCheck1"> <label class="form-check-label" for="exampleCheck1">Check me out</label> </div>--}}
+                                    <div class="mb-3"><label for="exampleInputEmail1"
+                                                             class="form-label">Organization</label>
+                                        <select class="form-control select2" id="expertise-select"
+                                                name="organization_id" required>
+                                            <option hidden=""></option>
+                                            @if(auth()->user()->super_admin)
+                                                @foreach(Organization::all() as $organization)
+                                                    <option value="{{ $organization->id }}">
+                                                        {{ $organization->name }}
+                                                    </option>
+                                                @endforeach
+                                            @else
+                                                @foreach(Organization::where('admin_id',auth()->id())->get() as $organization)
+                                                    <option value="{{ $organization->id }}">
+                                                        {{ $organization->name }}
+                                                    </option>
+                                                @endforeach
+                                            @endif
+                                        </select>
+                                    </div>
+                                    <div class="mb-3"><label for="exampleInputEmail1" class="form-label">Organization
+                                            Admin?</label> <input type="checkbox" name="is_admin"
+                                                                   class="form-checkbox" value="1"
+                                                                   aria-describedby="emailHelp">
+                                        <div id="emailHelp" class="form-text">
+                                            Mark this checkbox if the user is the admin of the selected organization.
+                                        </div>
+                                    </div>
+                                    {{--                                    <div class="mb-3"> <label for="exampleInputPassword1" class="form-label">Password</label> <input type="password" class="form-control" id="exampleInputPassword1"> </div>--}}
+                                    {{--                                    <label for="exampleInputPassword1" class="form-label">Image</label>--}}
+                                    {{--                                    <div class="input-group mb-3"> <input type="file" class="form-control" id="inputGroupFile02"> <label class="input-group-text" for="inputGroupFile02">Upload</label> </div>--}}
+                                    {{--                                    <div class="mb-3 form-check"> <input type="checkbox" class="form-check-input" id="exampleCheck1"> <label class="form-check-label" for="exampleCheck1">Check me out</label> </div>--}}
                                 </div> <!--end::Body--> <!--begin::Footer-->
-                                <div class="card-footer"> <button type="submit" class="btn btn-primary">Submit</button> </div> <!--end::Footer-->
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div> <!--end::Footer-->
                             </form> <!--end::Form-->
                         </div> <!--end::Quick Example-->
                     </div> <!--end::Col-->
@@ -62,4 +98,9 @@
             </div> <!--end::Container-->
         </div> <!--end::App Content-->
     </main>
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2();
+        });
+    </script>
 @endsection

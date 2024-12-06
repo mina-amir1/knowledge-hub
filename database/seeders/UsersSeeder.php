@@ -27,6 +27,7 @@ class UsersSeeder extends Seeder
             'email' => 'admin@test.com',
             'password'=> Hash::make('password1')
         ]);
+        $admin->super_admin = true;
         $admin->assignRole('admin');
         $admin->save();
 

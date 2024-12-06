@@ -8,8 +8,8 @@ class Location extends Model
 {
     protected $fillable = ['province'];
 
-    public function users()
+    public function organizations()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(Organization::class);
     }
 }

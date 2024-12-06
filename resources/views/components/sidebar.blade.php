@@ -37,6 +37,10 @@
                         <p>Meetings</p>
                     </a>
                 </li>
+                <li class="nav-item"> <a href="{{ route('organizations.index') }}" class="nav-link"> <i class="nav-icon bi bi-building-fill"></i>
+                        <p>Organizations</p>
+                    </a>
+                </li>
                 <li class="nav-item"> <a href="{{ route('contacts') }}" class="nav-link"> <i class="nav-icon bi bi-telephone-fill"></i>
                         <p>Users Contacts</p>
                     </a>

@@ -8,8 +8,8 @@ class Expertise extends Model
 {
     protected $fillable = ['field'];
 
-    public function users()
+    public function organizations()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(Organization::class);
     }
 }

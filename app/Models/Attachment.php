@@ -10,7 +10,7 @@ class Attachment extends Model
     const APPROVED = 1;
     const BLOCKED = 2;
 
-    protected $fillable = ['user_id','thread_id','comment_id','file_name','original_name'];
+    protected $fillable = ['user_id','thread_id','comment_id','file_name','original_name', 'status','organization_id'];
 
     public function user()
     {
