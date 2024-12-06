@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Organization;
 use App\Models\Thread;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -40,10 +41,12 @@ class ThreadController extends Controller
         if ($validator->fails()){
             return redirect()->back()->withErrors($validator)->withInput();
         }
+        $organizationID = auth()->user()->organization_id ?? Organization::where('admin_id',auth()->id())->first()->id ?? null;
         $thread = Thread::create([
             'title' => $request->get('title'),
             'body' => $request->input('body'),
-            'user_id' => auth()->id()
+            'user_id' => auth()->id(),
+            'organization_id' => $organizationID
         ]);
         if ($thread) {
             return redirect()->route('threads.create')->with('success', 'Thread created successfully.');

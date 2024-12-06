@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attachment;
 use App\Models\Comment;
+use App\Models\Organization;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,10 +20,13 @@ class CommentController extends Controller
         if ($validator->fails()){
             return redirect()->back()->withErrors($validator)->withInput();
         }
+        $organizationID = auth()->user()->organization_id ?? Organization::where('admin_id',auth()->id())->first()?->id ?? null;
+
         $comment = Comment::create([
             'body' => $request->get('body'),
             'user_id' => auth()->id(),
-            'thread_id' => $thread_id
+            'thread_id' => $thread_id,
+            'organization_id' => $organizationID
         ]);
         if ($request->hasFile('files')){
             foreach ($request->file('files') as $file){
@@ -34,7 +38,8 @@ class CommentController extends Controller
                     'file_name' => $name,
                     'thread_id' => $thread_id,
                     'comment_id' => $comment->id,
-                    'status' => Attachment::PENDING
+                    'status' => Attachment::PENDING,
+                    'organization_id' => $organizationID
                 ]);
             }
         }

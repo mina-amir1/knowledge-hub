@@ -25,10 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'activation_token',
         'is_blocked',
         'phone',
-        'organisation_name',
-        'organisation_about',
-        'no_employees',
-        'social_media',
+        'organization_id',
     ];
 
     /**
@@ -69,13 +66,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return $query->where('is_blocked', false)->whereNotNull('email_verified_at');
     }
 
-    public function locations()
+    public function organization()
     {
-        return $this->belongsToMany(Location::class);
+        return $this->belongsTo(Organization::class, 'organization_id');
     }
 
-    public function expertises()
+    public function isOrganizationAdmin($organization)
     {
-        return $this->belongsToMany(Expertise::class);
+        $organization = $organization instanceof Organization ? $organization : Organization::find($organization);
+        return $organization && $organization->admin_id == $this->id;
     }
 }

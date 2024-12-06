@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ActivateUser;
+use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,12 +18,20 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::role('user')->paginate(env('PER_PAGE'));
+        if (auth()->user()->super_admin) {
+            $users = User::paginate(env('PER_PAGE'));
+        } else {
+            $organizations = Organization::where('admin_id', auth()->id())->pluck('id')->toArray();
+            $users = User::whereIn('organization_id', $organizations)->paginate(env('PER_PAGE'));
+        }
         return view('users.index', compact('users'));
     }
 
     public function createUser()
     {
+        if (!auth()->user()->hasRole('admin')|| !auth()->user()->super_admin){
+            return \redirect()->back()->withErrors('You are not authorized to create a user.');
+        }
         return view('users.create');
     }
 
@@ -31,20 +40,34 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
+            'organization_id' => 'required|exists:organizations,id'
         ]);
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        if (!auth()->user()->super_admin || !auth()->user()->isOrganizationAdmin($request->get('organization_id'))){
+            return redirect()->back()->withErrors(['You are not authorized to create a user for this organization.']);
+        }
+
+        $is_admin = (bool)$request->get('is_admin');
         $user = User::create([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
+            'organization_id' => $request->get('organization_id'),
             'password' => Hash::make('password1'),
             'activation_token' => Str::random(60)
         ]);
 
         if ($user) {
-            $user->assignRole('user');
+            $is_admin ? $user->assignRole('admin') : $user->assignRole('user');
+            if ($is_admin){
+                $organization = Organization::find($request->get('organization_id'));
+                $organization->admin_id = $user->id;
+                $organization->save();
+                $user->organization_id = null;
+                $user->save();
+            }
             Mail::to($user->email)->send(new ActivateUser($user));
             return redirect()->route('users.create')->with('success', 'User created successfully.');
         } else {
@@ -56,6 +79,9 @@ class UserController extends Controller
     {
         $user = User::find($id);
         if ($user) {
+            if (!auth()->user()->super_admin && !auth()->user()->isOrganizationAdmin($user->organization_id)){
+                return redirect()->back()->withErrors(['You are not authorized to block a user for this organization.']);
+            }
             $user->is_blocked = true;
             $user->save();
             return redirect()->route('users.index')->with('success', 'User blocked successfully.');
@@ -68,6 +94,9 @@ class UserController extends Controller
     {
         $user = User::find($id);
         if ($user) {
+            if (!auth()->user()->super_admin && !auth()->user()->isOrganizationAdmin($user->organization_id)){
+                return redirect()->back()->withErrors(['You are not authorized to unblock a user for this organization.']);
+            }
             $user->is_blocked = false;
             $user->save();
             return redirect()->route('users.index')->with('success', 'User unblocked successfully.');
@@ -80,6 +109,9 @@ class UserController extends Controller
     {
         $user = User::find($id);
         if ($user) {
+            if (!auth()->user()->super_admin && !auth()->user()->isOrganizationAdmin($user->organization_id)){
+                return redirect()->back()->withErrors(['You are not authorized to re-invite a user for this organization.']);
+            }
             if ($user->hasVerifiedEmail()) {
                 return redirect()->route('users.index')->withErrors(['User already accepted the invitation!']);
             }
@@ -103,13 +135,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048', // Set size limit as needed
             'name' => 'required|string|max:255',
-            'organisation_name' => 'required|string|max:255',
-            'organisation_about' => 'nullable|string|max:255',
-            'no_employees' => 'nullable|integer',
-            'social_media' => 'nullable|string|max:255',
             'phone' => 'required|string|max:255',
-            'expertises' => 'required|array',
-            'locations' => 'required|array',
         ]);
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -131,14 +157,7 @@ class UserController extends Controller
         }
 
         $user->name = $request->get('name');
-        $user->organisation_name = $request->get('organisation_name');
-        $user->organisation_about = $request->get('organisation_about');
-        $user->no_employees = $request->get('no_employees');
-        $user->social_media = $request->get('social_media');
         $user->phone = $request->get('phone');
-
-        $user->expertises()->sync($request->get('expertises',[]));
-        $user->locations()->sync($request->get('locations',[]));
 
         $user->save();
 

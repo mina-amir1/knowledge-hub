@@ -60,7 +60,7 @@
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
                                         <td>{{ $user->phone }}</td>
-                                        <td>{{ $user->organisation }}</td>
+                                        <td><a href="{{ $user->organization_id ? route('organizations.show',$user->organization_id) : '' }}" class="text-decoration-none"> {{ $user->organization?->name }}</a></td>
                                     </tr>
                                     @endforeach
                                     </tbody>

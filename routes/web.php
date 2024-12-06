@@ -4,6 +4,7 @@ use App\Http\Controllers\AttachmentsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\MeetingsController;
+use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ThreadController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -55,6 +56,15 @@ Route::middleware(['auth','active'])->group(function () {
     Route::get('meetings/{id}/edit', [MeetingsController::class, 'edit'])->name('meetings.edit');
     Route::post('meetings/{id}/update', [MeetingsController::class, 'update'])->name('meetings.update');
     Route::get('meetings/{id}/delete', [MeetingsController::class, 'destroy'])->name('meetings.destroy');
+
+    Route::get('organizations', [OrganizationController::class, 'index'])->name('organizations.index');
+    Route::get('organizations/create', [OrganizationController::class, 'createOrganization'])->name('organizations.create');
+    Route::post('organizations/store', [OrganizationController::class, 'store'])->name('organizations.store');
+    Route::get('organizations/{id}', [OrganizationController::class, 'show'])->name('organizations.show');
+    Route::get('organizations/{id}/edit', [OrganizationController::class, 'edit'])->name('organizations.edit');
+    Route::post('organizations/{id}/update', [OrganizationController::class, 'update'])->name('organizations.update');
+    Route::get('organizations/{id}/delete', [OrganizationController::class, 'destroy'])->name('organizations.destroy');
+
 
     Route::post('/notifications/mark-as-seen', [UserController::class, 'markAsSeen'])->name('notifications.markAsSeen');
 
