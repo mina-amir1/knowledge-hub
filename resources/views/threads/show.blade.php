@@ -140,7 +140,18 @@
     </main>
     <script>
         // Initialize CKEditor
-        CKEDITOR.replace('editor');
+        CKEDITOR.replace('editor',{
+            toolbar: [
+                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] }, // Bold, Italic, Underline
+                { name: 'paragraph', items: ['NumberedList', 'BulletedList','Blockquote'] }, // Lists
+                { name: 'styles', items: ['Format','Styles'] } // Headings/Formatting
+            ],
+            format_tags: 'p;h1;h2;h3;h4;h5;h6', // Restrict available headings
+            removeButtons: '', // Ensure no unwanted buttons are displayed
+            removePlugins: 'elementspath', // Remove the elements path
+            resize_enabled: false, // Disable resizing
+            addPlugins: 'highlight,blockquote'
+        });
 
         function focusEditor() {
             document.getElementById('cke_editor').focus();
