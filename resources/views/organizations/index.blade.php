@@ -50,30 +50,41 @@
                                 @endif
                             </div> <!-- /.card-header -->
                             <div class="card-body p-0">
+                                @php
+                                $is_admin = false;
+                                foreach ($organizations as $organization) {
+                                    if ($organization->admin_id === Auth::id()) {
+                                        $is_admin = true;
+                                        break;
+                                    }
+                                }
+                                @endphp
                                 <table class="table table-striped">
                                     <thead>
                                     <tr>
                                         <th style="width: 10px">ID</th>
                                         <th>Name</th>
-                                        <th>Contact Person</th>
-                                        <th>Contact Person email</th>
-                                        <th>Contact Person phone</th>
+                                        <th>Logo</th>
+                                        @if($is_admin || Auth::user()->super_admin )
                                         <th>Actions</th>
+                                        @endif
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @foreach($organizations as $organization)
                                         <tr class="align-middle">
-                                            <td><a href="{{ route('organizations.show',[$organization->id]) }}" class="text-decoration-none">
-                                                    {{ $organization->id }}</a>
+                                            <td>{{ $organization->id }}</td>
+                                            <td> <a href="{{ route('organizations.show',[$organization->id]) }}" class="text-decoration-none">
+                                                    {{ $organization->name }}</a>
                                             </td>
-                                            <td>{{ $organization->name }}</td>
-                                            <td>{{ $organization->contact_person_name }}</td>
-                                            <td>{{ $organization->contact_person_email}}</td>
-                                            <td>{{ $organization->contact_person_phone }}</td>
+                                            <td><img class="rounded-circle img-fluid"
+                                                     src="{{ $organization->logo ? Storage::disk('public')->url('logo/'.$organization->logo) : asset('img/orgAvatar.png') }}"
+                                                     alt="Organization Logo"
+                                                     style="max-width: 50px;">
+                                            </td>
+                                            @if($organization->admin_id === Auth::id() || Auth::user()->super_admin )
                                             <td>
-                                                @if($organization->admin_id === Auth::id() || Auth::user()->super_admin )
-                                                <div class="dropdown">
+                                                  <div class="dropdown">
                                                     <button class="btn btn-secondary dropdown-toggle" type="button"
                                                             data-bs-toggle="dropdown" aria-expanded="false">
                                                         Actions
@@ -88,9 +99,9 @@
                                                             </li>
                                                         @endif
                                                     </ul>
-                                                </div>
-                                                @endif
+                                                  </div>
                                             </td>
+                                            @endif
                                         </tr>
                                     @endforeach
                                     </tbody>

@@ -51,7 +51,7 @@
                             </div> <!-- /.card-header -->
                             <div class="card-body p-0">
                                 <div class="card-body">
-                                    <p> {{ Str::limit(strip_tags($thread->body), 100, '...') }}</p>
+                                    <p> {{ Str::limit(str_replace('&nbsp;', ' ', strip_tags($thread->body)), 100, '...') }}</p>
                                 </div>
                             </div>
                             <div class="card-footer">
