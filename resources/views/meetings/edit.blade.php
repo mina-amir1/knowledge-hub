@@ -51,8 +51,9 @@ $attendees = $meeting->attendees->pluck('user_id')->toArray();
                                         <input type="text"
                                                name="title"
                                                required
+                                               minlength="5"
                                                class="form-control"
-                                               id="exampleInputPassword1"
+                                               id="title"
                                                value="{{ $meeting->title }}"
                                         >
                                     </div>
@@ -127,9 +128,17 @@ $attendees = $meeting->attendees->pluck('user_id')->toArray();
             }
 
             $('.select2').select2();
+            $("#title").on('input', function () {
+                const title = $(this).val();
+                if ($.trim(title).length > 0) {
+                    $("#make-url").removeClass('disabled');
+                } else {
+                    $("#make-url").addClass('disabled');
+                }
+            });
             $("#make-url").click(function (event) {
-                const randomString = generateRandomString();
-                $("#url-input").val('https://meet.jit.si/' + randomString);
+                let meetingTitle = $("#title").val().trim().replace(/\s+/g, '-').toLowerCase();
+                $("#url-input").val('https://meet.jit.si/' + meetingTitle);
             });
         });
     </script>

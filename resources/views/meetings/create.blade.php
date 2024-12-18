@@ -47,15 +47,16 @@
                                     <div class="mb-3"><label for="exampleInputPassword1"
                                                              class="form-label">Title</label> <input type="text"
                                                                                                      name="title"
+                                                                                                     minlength="5"
                                                                                                      required
                                                                                                      class="form-control"
-                                                                                                     id="exampleInputPassword1">
+                                                                                                     id="title">
                                     </div>
                                     <div class="mb-3">
                                         <label for="exampleInputPassword1" class="form-label">URL</label>
                                         <div class="d-flex align-items-center">
                                             <input type="text" name="url"  required class="form-control me-2 w-75" id="url-input">
-                                            <a id="make-url" class="btn btn-primary">Generate link</a>
+                                            <a id="make-url" class="btn disabled btn-primary">Generate link</a>
                                         </div>
                                     </div>
                                     <div class="mb-3"><label for="exampleInputEmail1" class="form-label">Start Time
@@ -114,9 +115,17 @@
             }
 
             $('.select2').select2();
+            $("#title").on('input', function () {
+                const title = $(this).val();
+                if ($.trim(title).length > 0) {
+                    $("#make-url").removeClass('disabled');
+                } else {
+                    $("#make-url").addClass('disabled');
+                }
+            });
             $("#make-url").click(function (event) {
-                const randomString = generateRandomString();
-                $("#url-input").val('https://meet.jit.si/' + randomString);
+                let meetingTitle = $("#title").val().trim().replace(/\s+/g, '-').toLowerCase();
+                $("#url-input").val('https://meet.jit.si/' + meetingTitle);
             });
         });
     </script>
