@@ -15,6 +15,10 @@ Route::post('login',[AuthController::class,'login'])->name('login');
 Route::post('logout',[AuthController::class,'logout'])->name('logout');
 Route::get('activate/{token}',[AuthController::class,'activationShow'])->name('activate.show');
 Route::post('activate/{token}',[AuthController::class,'activateUser'])->name('activate');
+Route::get('forgot-password', [AuthController::class, 'showForgetPasswordForm'])->name('password.request');
+Route::post('forgot-password', [AuthController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
+Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
 Route::middleware(['auth','role:admin'])->group(function (){
     Route::get('admin',function (){

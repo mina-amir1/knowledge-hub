@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -75,5 +76,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $organization = $organization instanceof Organization ? $organization : Organization::find($organization);
         return $organization && $organization->admin_id == $this->id;
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPassword($token));
     }
 }
