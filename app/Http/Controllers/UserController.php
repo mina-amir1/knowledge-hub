@@ -170,9 +170,47 @@ class UserController extends Controller
         return "success";
     }
 
-    public function contacts()
+    public function contacts(Request $request)
     {
-        $contacts = User::active()->role('user')->paginate(env('PER_PAGE'));
+        $name = $request->get('name');
+        $email = $request->get('email');
+        $organization = $request->get('organization');
+        $position = $request->get('position');
+
+        $query = User::active();
+
+        if ($email) {
+            $query->where('email', 'like', '%' . $email . '%');
+        }
+        if ($name) {
+            $query->where('name', 'like', '%' . $name . '%');
+        }
+        if ($organization) {
+            $admins = Organization::where('name', 'like', '%' . $organization . '%')->pluck('admin_id');
+
+            $query->where(function ($q) use ($organization, $admins) {
+                $q->whereHas('organization', function ($q) use ($organization) {
+                    $q->where('name', 'like', '%' . $organization . '%');
+                });
+                // Include admins of the organization
+                $q->orWhereIn('id', $admins);
+            });
+        }
+        if ($position) {
+            switch ($position){
+                case 'admin':
+                    $admins = Organization::pluck('admin_id')->unique();
+                    $query->whereIn('id',$admins);
+                    $query->role('admin');
+                    break;
+
+                case 'user':
+                    $query->where('organization_id','!=',null);
+                    $query->role('user');
+                    break;
+            }
+        }
+        $contacts = $query->paginate(env('PER_PAGE'));
         return view('users.contacts', compact('contacts'));
     }
 

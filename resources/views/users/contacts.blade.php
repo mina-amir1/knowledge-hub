@@ -37,6 +37,59 @@
         <div class="app-content"> <!--begin::Container-->
             <div class="container-fluid"> <!--begin::Row-->
                 <div class="row g-4"> <!--begin::Col-->
+                    <form method="GET" action="" class="mb-3">
+                        <div class="row">
+                            {{-- Name Filter --}}
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" name="name" id="name" class="form-control"
+                                           placeholder="Enter name" value="{{ request('name') }}">
+                                </div>
+                            </div>
+
+                            {{-- Email Filter --}}
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="text" name="email" id="email" class="form-control"
+                                           placeholder="Enter email" value="{{ request('email') }}">
+                                </div>
+                            </div>
+
+                            {{-- Organization Filter --}}
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="organization">Organization</label>
+                                    <input type="text" name="organization" id="organization" class="form-control"
+                                           placeholder="Enter organization" value="{{ request('organization') }}">
+                                </div>
+                            </div>
+
+                            {{-- Position Filter --}}
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="status">Position</label>
+                                    <select name="position" id="position" class="form-control">
+                                        <option value="">-- All --</option>
+                                        <option value="admin" {{ request('position') == 'admin' ? 'selected' : '' }}>Admin</option>
+                                        <option value="user" {{ request('position') == 'user' ? 'selected' : '' }}>User</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            {{-- Filter & Reset Buttons --}}
+                            <div class="col-md-3 mt-4 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary mr-2">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                                <a href="{{ route('contacts') }}" class="btn btn-secondary mx-2">
+                                    <i class="fas fa-times"></i> Reset
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+
                     <div class="col-md-12"><!--begin::Quick Example-->
                         <div class="card mb-4">
                             <div class="card-header">
@@ -51,16 +104,28 @@
                                         <th>Email</th>
                                         <th>Phone</th>
                                         <th>Organisation</th>
+                                        <th>Role</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @foreach($contacts as $user)
+                                        @php
+                                        if (!$user->organization_id){
+                                            $organization = \App\Models\Organization::where('admin_id',$user->id)->first();
+                                            $organizationId = $organization ? $organization->id : '';
+                                            $organizationName = $organization ? $organization->name : '';
+                                        }else{
+                                             $organizationId = $user->organization_id ?? '';
+                                             $organizationName = $user->organization?->name;
+                                        }
+                                        @endphp
                                     <tr class="align-middle">
                                         <td>{{ $user->id }}</td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
                                         <td>{{ $user->phone }}</td>
-                                        <td><a href="{{ $user->organization_id ? route('organizations.show',$user->organization_id) : '' }}" class="text-decoration-none"> {{ $user->organization?->name }}</a></td>
+                                        <td><a href="{{ $organizationId ? route('organizations.show',$organizationId) : '' }}" class="text-decoration-none"> {{ $organizationName }}</a></td>
+                                        <td>{{ ucwords($user->getRoleNames()?->first()) }}</td>
                                     </tr>
                                     @endforeach
                                     </tbody>
