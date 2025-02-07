@@ -37,6 +37,52 @@
         <div class="app-content"> <!--begin::Container-->
             <div class="container-fluid"> <!--begin::Row-->
                 <div class="row g-4"> <!--begin::Col-->
+                    {{--       Filters             --}}
+                    <form method="GET" action="" class="mb-3">
+                        <div class="row">
+                            {{-- Status Filter --}}
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="status">Status</label>
+                                    <select name="status" id="status" class="form-control">
+                                        <option value="">-- All --</option>
+                                        <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
+                                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                        <option value="blocked" {{ request('status') == 'blocked' ? 'selected' : '' }}>Blocked</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            {{-- Attachment Name Filter --}}
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="attachment_name">Attachment Name</label>
+                                    <input type="text" name="attachment_name" id="attachment_name" class="form-control"
+                                           placeholder="Enter attachment name" value="{{ request('attachment_name') }}">
+                                </div>
+                            </div>
+
+                            {{-- Thread Title Filter --}}
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="thread_title">Thread Title</label>
+                                    <input type="text" name="thread_title" id="thread_title" class="form-control"
+                                           placeholder="Enter thread title" value="{{ request('thread_title') }}">
+                                </div>
+                            </div>
+
+                            {{-- Filter & Reset Buttons --}}
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary mr-2">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                                <a href="{{ route('attachments.index') }}" class="btn btn-secondary mx-2">
+                                    <i class="fas fa-times"></i> Reset
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+
                     <div class="col-md-12"><!--begin::Quick Example-->
                         <div class="card mb-4">
                             <div class="card-header">

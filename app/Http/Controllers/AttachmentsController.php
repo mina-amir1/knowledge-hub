@@ -9,14 +9,37 @@ use Illuminate\Support\Facades\Storage;
 
 class AttachmentsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $threadTitle = $request->get('thread_title');
         if (auth()->user()->super_admin) {
-            $files = Attachment::orderBy('created_at', 'desc')->paginate(env('PER_PAGE'));
+            $files = Attachment::all();
         } else {
             $organizations = Organization::where('admin_id', auth()->id())->pluck('id')->toArray();
-            $files = Attachment::whereIn('organization_id', $organizations)->orderBy('created_at', 'desc')->paginate(env('PER_PAGE'));
+            $files = Attachment::whereIn('organization_id', $organizations);
         }
+        if ($request->get('status')){
+            switch($request->get('status')){
+                case 'approved':
+                    $files->where('status',1);
+                    break;
+                case 'pending':
+                    $files->where('status',0);
+                    break;
+                case 'blocked':
+                    $files->where('status',2);
+                    break;
+            }
+        }
+        if($request->get('attachment_name')){
+            $files->where('original_name', 'like', '%' . $request->get('attachment_name') . '%');
+        }
+        if ($threadTitle) {
+            $files->whereHas('thread', function ($query) use ($threadTitle) {
+                $query->where('title', 'like', '%' . $threadTitle . '%');
+            });
+        }
+        $files = $files->orderBy('created_at', 'desc')->paginate(env('PER_PAGE'));
         return view('attachments.index', ['files' => $files]);
     }
 
