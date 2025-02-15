@@ -13,7 +13,7 @@ class AttachmentsController extends Controller
     {
         $threadTitle = $request->get('thread_title');
         if (auth()->user()->super_admin) {
-            $files = Attachment::all();
+            $files = Attachment::query();
         } else {
             $organizations = Organization::where('admin_id', auth()->id())->pluck('id')->toArray();
             $files = Attachment::whereIn('organization_id', $organizations);
