@@ -15,9 +15,13 @@ use Illuminate\Support\Str;
 
 class OrganizationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $organizations = Organization::paginate(env('PER_PAGE'));
+        $organizations = Organization::query();
+        if($request->get('name')){
+            $organizations->where('name', 'like', '%' . $request->get('name') . '%');
+        }
+        $organizations = $organizations->paginate(env('PER_PAGE'));
         return view('organizations.index', compact('organizations'));
     }
 

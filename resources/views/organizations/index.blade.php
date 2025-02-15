@@ -39,6 +39,28 @@
             <div class="container-fluid"> <!--begin::Row-->
 
                 <div class="row g-4"> <!--begin::Col-->
+                    <form method="GET" action="" class="mb-3">
+                        <div class="row">
+                            {{-- Name Filter --}}
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" name="name" id="name" class="form-control"
+                                           placeholder="Enter name" value="{{ request('name') }}">
+                                </div>
+                            </div>
+                            {{-- Filter & Reset Buttons --}}
+                            <div class="col-md-3 mt-4 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary mr-2">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                                <a href="{{ route('organizations.index') }}" class="btn btn-secondary mx-2">
+                                    <i class="fas fa-times"></i> Reset
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+
                     <div class="col-md-12"><!--begin::Quick Example-->
                         <div class="card mb-4">
                             <div class="card-header">
